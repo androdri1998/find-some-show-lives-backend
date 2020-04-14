@@ -1,2 +1,4 @@
 node_modules/
 build/
+docker-compose.yml
+database.js
