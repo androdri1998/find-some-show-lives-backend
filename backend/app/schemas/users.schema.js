@@ -8,5 +8,11 @@ module.exports = {
       password: Joi.string().min(6).required(),
       confirm_password: Joi.ref('password')
     })
+  },
+  authenticateUserSchema: {
+    body: Joi.object({
+      email: Joi.string().min(1).email({ minDomainSegments: 2, tlds: { allow: ['com'] } }).required(),
+      password: Joi.string().min(6).required()
+    })
   }
 }

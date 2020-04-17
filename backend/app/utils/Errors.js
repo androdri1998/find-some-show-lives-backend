@@ -18,7 +18,17 @@ class CustomBadRequestError extends Error {
   }
 }
 
+class CustomUnauthorizedError extends Error {
+  constructor(message = "Unauthorized") {
+    super(message);
+    this.name = "Unauthorized error";
+    this.message = message;
+    this.status = httpStatusCode.UNAUTHORIZED;
+  }
+}
+
 module.exports = {
   CustomConflictError,
-  CustomBadRequestError
+  CustomBadRequestError,
+  CustomUnauthorizedError
 }

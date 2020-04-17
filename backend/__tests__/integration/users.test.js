@@ -2,6 +2,7 @@ const request = require('supertest');
 const faker = require('faker');
 const app = require('../../app');
 const truncate = require('../utils/truncate');
+const { createUsersService } = require('../../app/services/users.service');
 
 describe('Register users', () => {
   beforeEach(async () => {
@@ -38,6 +39,7 @@ describe('Register users', () => {
       .send(user);
 
     expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
   });
 
   it('should return and error with code 409, user already register', async () => {
@@ -78,5 +80,94 @@ describe('Register users', () => {
     expect(response.body).toHaveProperty("error");
     expect(response.body).toHaveProperty("error_description");
   });
+});
 
+describe('Authentication', () => {
+  beforeEach(async () => {
+    await truncate();
+  });
+
+  it('should authenticate in application', async () => {
+    const userPass = faker.internet.password();
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+
+    await createUsersService(user);
+
+    const response = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user.email,
+        password: user.password
+      });
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should authenticate in application and return object with jwt code', async () => {
+    const userPass = faker.internet.password();
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+
+    await createUsersService(user);
+
+    const response = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user.email,
+        password: user.password
+      });
+
+    expect(response.body).toHaveProperty("access_token");
+  });
+
+  it('should return error password error', async () => {
+    const userPass = faker.internet.password();
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+
+    await createUsersService(user);
+
+    const response = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user.email,
+        password: "123456"
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it('should return error email error', async () => {
+    const userPass = faker.internet.password();
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+
+    await createUsersService(user);
+
+    const response = await request(app)
+      .post('/users/auth')
+      .send({
+        email: `test${user.email}`,
+        password: user.password
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
 });

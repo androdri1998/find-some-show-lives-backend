@@ -1,31 +1,37 @@
-const moment = require('moment');
-const uuid = require('uuid/v4');
-const { User } = require('../models');
-const { CustomConflictError } = require('../utils/Errors');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const { createUsersService } = require('../services/users.service');
+const { CustomUnauthorizedError } = require('../utils/Errors');
+const { getOneUserRepository } = require('../repositories/users.repository');
 
 module.exports = {
   createUsers: async (params) => {
-    const { email, name, password } = params;
-    
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
     let user;
     try{
-      user = await User.create({
-        id: uuid(),
-        name: name,
-        email: email,
-        profile_photo: null,
-        password: password,
-        created_at: createdAt,
-        updated_at: createdAt,
-        active: true
-      });
+      user = await createUsersService(params);
     } catch(err) {
-      throw new CustomConflictError(err.message);
+      throw err;
     }
   
     return {
-      id: user.id
+      id: user.id,
+      message: "User created with sucess"
+    }
+  },
+  authenticateUser: async (params) => {
+    const { email, password } = params;
+
+    const user = await getOneUserRepository({ email });
+    if(!user)
+      throw new CustomUnauthorizedError("User not found");
+
+    if(!(await bcrypt.compare(password, user.password)))
+      throw new CustomUnauthorizedError("Incorrect password");
+
+    const access_token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
+
+    return {
+      access_token: access_token
     }
   }
 }

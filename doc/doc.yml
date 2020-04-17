@@ -493,10 +493,6 @@ paths:
           description: 'Error, to more informations, query error_description'
           schema:
             $ref: '#/definitions/responseError'
-        '404':
-          description: 'Error, to more informations, query error_description'
-          schema:
-            $ref: '#/definitions/responseError'
   /users/logout:
     put:
       tags:
