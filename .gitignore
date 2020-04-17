@@ -2,3 +2,8 @@ node_modules/
 build/
 docker-compose.yml
 database.js
+database.sqlite
+
+.env
+.env.test
+__tests__/coverage
