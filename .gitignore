@@ -6,4 +6,4 @@ database.sqlite
 
 .env
 .env.test
-__tests__/coverage
+coverage/

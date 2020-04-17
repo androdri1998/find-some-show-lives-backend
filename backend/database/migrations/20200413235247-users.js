@@ -13,7 +13,7 @@ module.exports = {
         type: DataTypes.STRING,
       },
       profile_photo: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING,
       },
       email: {
