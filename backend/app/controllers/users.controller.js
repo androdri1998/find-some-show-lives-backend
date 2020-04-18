@@ -19,5 +19,14 @@ module.exports = {
       const [status, error] = switchError(err);
       return res.status(status).json(error);
     }
+  },
+  getUser: async (req, res) => {
+    try{
+      const response = await usersFactory.getUser({ ...req.body, ...req.query, ...req.params});
+      return res.status(200).json(response);
+    } catch(err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
   }
 }

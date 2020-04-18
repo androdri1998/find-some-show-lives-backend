@@ -14,5 +14,10 @@ module.exports = {
       email: Joi.string().min(1).email({ minDomainSegments: 2, tlds: { allow: ['com'] } }).required(),
       password: Joi.string().min(6).required()
     })
+  },
+  getUserSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required() 
+    })
   }
 }

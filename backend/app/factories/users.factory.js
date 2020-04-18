@@ -33,5 +33,16 @@ module.exports = {
     return {
       access_token: access_token
     }
+  },
+  getUser: async (params) => {
+    const { user_id } = params;
+
+    const user = await getOneUserRepository({ id: user_id });
+    if(!user)
+      throw new CustomUnauthorizedError("User not found");
+
+    user.password = undefined;
+
+    return { user };
   }
 }
