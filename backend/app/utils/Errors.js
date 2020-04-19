@@ -27,8 +27,18 @@ class CustomUnauthorizedError extends Error {
   }
 }
 
+class CustomNotFoundError extends Error {
+  constructor(message = "Not found") {
+    super(message);
+    this.name = "Not Found error";
+    this.message = message;
+    this.status = httpStatusCode.NOT_FOUND;
+  }
+}
+
 module.exports = {
   CustomConflictError,
   CustomBadRequestError,
-  CustomUnauthorizedError
+  CustomUnauthorizedError,
+  CustomNotFoundError
 }

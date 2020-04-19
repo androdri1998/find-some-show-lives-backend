@@ -24,4 +24,15 @@ describe('Users', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it('should return error not found user', async () => {
+    const uuidUser = "3a71f69a-7c35-48cc-8a1b-9609fda1756d";
+
+    const response = await request(app)
+      .get(`/users/${uuidUser}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
 });

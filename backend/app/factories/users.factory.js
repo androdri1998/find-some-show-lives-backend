@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { createUsersService } = require('../services/users.service');
-const { CustomUnauthorizedError } = require('../utils/Errors');
+const { CustomUnauthorizedError, CustomNotFoundError } = require('../utils/Errors');
 const { getOneUserRepository } = require('../repositories/users.repository');
 
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
 
     const user = await getOneUserRepository({ id: user_id });
     if(!user)
-      throw new CustomUnauthorizedError("User not found");
+      throw new CustomNotFoundError("User not found");
 
     user.password = undefined;
 

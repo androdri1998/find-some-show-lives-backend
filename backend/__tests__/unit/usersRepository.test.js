@@ -41,4 +41,16 @@ describe('Users Repository', () => {
 
     expect(getUser.email).toBe(user.email);
   });
+
+  it('should return error in get one user in repository ', async () => {
+    const error = new Error("SQLITE_ERROR: no such column: User.teste");
+    let requestError;
+    try{
+      await getOneUserRepository({ teste: "teste" }); 
+    } catch(err) { 
+      requestError = err;
+    }
+
+    expect(() => {throw requestError}).toThrow(error);
+  });
 });
