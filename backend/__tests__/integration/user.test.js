@@ -75,4 +75,17 @@ describe('Users', () => {
     expect(response.body).toHaveProperty("error");
     expect(response.body).toHaveProperty("error_description");
   });
+
+  it('should return jwt error', async () => {
+    const uuidUser = "3a71f69a-7c35-48cc-8a1b-9609fda1756d";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+    const response = await request(app)
+      .get(`/users/${uuidUser}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
 });
