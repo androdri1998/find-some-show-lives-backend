@@ -171,3 +171,186 @@ describe('Authentication', () => {
     expect(response.body).toHaveProperty("error_description");
   });
 });
+
+describe('Users', () => {
+  beforeEach(async () => {
+    await truncate();
+  });
+
+  it('should get users registereds in application', async () => {
+    const userPass = faker.internet.password();
+    
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user2);
+
+    const user3 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user3);
+
+    const user4 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user4);
+
+    const responseAuth = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user1.email,
+        password: user1.password
+      });
+
+    const response = await request(app)
+      .get(`/users`)
+      .set('Authorization', `Bearer ${responseAuth.body.access_token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it('should get users registereds filtered for search in application', async () => {
+    const userPass = faker.internet.password();
+    
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user2);
+
+    const user3 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user3);
+
+    const user4 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user4);
+
+    const responseAuth = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user1.email,
+        password: user1.password
+      });
+
+    const response = await request(app)
+      .get(`/users`)
+      .query({
+        search: `test`
+      })
+      .set('Authorization', `Bearer ${responseAuth.body.access_token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it('should get users registereds applying page and page_size in application', async () => {
+    const userPass = faker.internet.password();
+    
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user2);
+
+    const user3 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user3);
+
+    const user4 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user4);
+
+    const responseAuth = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user1.email,
+        password: user1.password
+      });
+
+    const response = await request(app)
+      .get(`/users`)
+      .query({
+        page: 0,
+        page_size: 2
+      })
+      .set('Authorization', `Bearer ${responseAuth.body.access_token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it('should return error bad request parameters get users in application', async () => {
+    const userPass = faker.internet.password();
+    
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass
+    };
+    await createUsersService(user1);
+
+    const responseAuth = await request(app)
+      .post('/users/auth')
+      .send({
+        email: user1.email,
+        password: user1.password
+      });
+
+    const response = await request(app)
+      .get(`/users`)
+      .query({
+        teste: 2
+      })
+      .set('Authorization', `Bearer ${responseAuth.body.access_token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+});

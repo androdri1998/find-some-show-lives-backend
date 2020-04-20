@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { Op } = require("sequelize");
 const { createUsersService } = require('../services/users.service');
 const { CustomUnauthorizedError, CustomNotFoundError } = require('../utils/Errors');
-const { getOneUserRepository } = require('../repositories/users.repository');
+const { getOneUserRepository, getUsersRepository } = require('../repositories/users.repository');
 
 module.exports = {
   createUsers: async (params) => {
@@ -44,5 +45,30 @@ module.exports = {
     user.password = undefined;
 
     return { user };
+  },
+  getUsers: async (params) => {
+    const { page = 0, page_size = 10, search } = params;
+
+    const offset = page_size * page;
+
+    let where = {};
+    if(search){
+      where = {
+        name: {
+          [Op.like]: `${search}%`
+        }
+      }
+    }
+
+    const [total , users] = await getUsersRepository({ 
+      limit: page_size, 
+      offset: offset,
+      ...where
+    });
+
+    return {
+      total: total,
+      results: users
+    };
   }
 }

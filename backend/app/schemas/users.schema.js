@@ -19,5 +19,12 @@ module.exports = {
     params: Joi.object({
       user_id: Joi.string().uuid().required() 
     })
-  }
+  },
+  getUsersSchema: {
+    query: Joi.object({
+      page: Joi.number().integer(),
+      page_size: Joi.number().integer(),
+      search: Joi.string().min(1)
+    })
+  },
 }
