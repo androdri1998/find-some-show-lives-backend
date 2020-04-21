@@ -1,9 +1,14 @@
 const request = require("supertest");
 const faker = require("faker");
+const uuid = require("uuid/v4");
+const moment = require("moment");
 const app = require("../../app");
 const truncate = require("../utils/truncate");
 const { createUsersService } = require("../../app/services/users.service");
 const { generateToken } = require("../../app/services/application.service");
+const {
+  followUserRepository,
+} = require("../../app/repositories/followUser.repository");
 
 describe("Register users", () => {
   beforeEach(async () => {
@@ -311,6 +316,109 @@ describe("Users", () => {
       .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should follow user", async () => {
+    const userPass = faker.internet.password();
+
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const user1created = await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const user2created = await createUsersService(user2);
+
+    const response = await request(app)
+      .put(`/users/follow-user`)
+      .send({ following_id: user2created.id })
+      .set("Authorization", `Bearer ${generateToken({ id: user1created.id })}`);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
+  });
+
+  it("should return error 400 follow user", async () => {
+    const userPass = faker.internet.password();
+
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const user1created = await createUsersService(user1);
+
+    const response = await request(app)
+      .put(`/users/follow-user`)
+      .set("Authorization", `Bearer ${generateToken({ id: user1created.id })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 follow user", async () => {
+    const userPass = faker.internet.password();
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const user2created = await createUsersService(user2);
+
+    const response = await request(app)
+      .put(`/users/follow-user`)
+      .send({ following_id: user2created.id });
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 409 follow user", async () => {
+    const userPass = faker.internet.password();
+
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const user1created = await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const user2created = await createUsersService(user2);
+
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const follow = {
+      id: uuid(),
+      follower_id: user1created.id,
+      following_id: user2created.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await followUserRepository(follow);
+
+    const response = await request(app)
+      .put(`/users/follow-user`)
+      .send({ following_id: user2created.id })
+      .set("Authorization", `Bearer ${generateToken({ id: user1created.id })}`);
+
+    expect(response.status).toBe(409);
     expect(response.body).toHaveProperty("error");
     expect(response.body).toHaveProperty("error_description");
   });

@@ -33,4 +33,12 @@ module.exports = {
       search: Joi.string().min(1),
     }),
   },
+  followUserSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required(),
+    }),
+    body: Joi.object({
+      following_id: Joi.string().uuid().required(),
+    }),
+  },
 };

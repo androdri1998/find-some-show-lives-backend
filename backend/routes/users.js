@@ -9,6 +9,7 @@ const {
   authenticateUserSchema,
   getUserSchema,
   getUsersSchema,
+  followUserSchema,
 } = require("../app/schemas/users.schema");
 
 routes.post(
@@ -24,14 +25,19 @@ routes.post(
 
 routes.use(authMiddleware);
 routes.get(
-  "/:user_id",
-  validateParams(getUserSchema, "params"),
-  usersController.getUser
-);
-routes.get(
   "/",
   validateParams(getUsersSchema, "query"),
   usersController.getUsers
+);
+routes.put(
+  "/follow-user",
+  validateParams(followUserSchema, "body"),
+  usersController.followUser
+);
+routes.get(
+  "/:user_id",
+  validateParams(getUserSchema, "params"),
+  usersController.getUser
 );
 
 module.exports = routes;

@@ -54,4 +54,19 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  followUser: async (req, res) => {
+    try {
+      const response = await usersFactory.followUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(201).json(response);
+    } catch (err) {
+      console.log(err);
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };

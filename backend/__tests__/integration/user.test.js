@@ -17,7 +17,6 @@ describe("Users", () => {
       name: faker.name.findName(),
       password: userPass,
     };
-
     const userCreated = await createUsersService(user);
 
     const response = await request(app)
