@@ -10,6 +10,7 @@ const {
   getUserSchema,
   getUsersSchema,
   followUserSchema,
+  unfollowUserSchema,
 } = require("../app/schemas/users.schema");
 
 routes.post(
@@ -34,6 +35,12 @@ routes.put(
   validateParams(followUserSchema, "body"),
   usersController.followUser
 );
+routes.put(
+  "/unfollow-user",
+  validateParams(unfollowUserSchema, "body"),
+  usersController.unfollowUser
+);
+routes.put("/logout", usersController.logoutUser);
 routes.get(
   "/:user_id",
   validateParams(getUserSchema, "params"),

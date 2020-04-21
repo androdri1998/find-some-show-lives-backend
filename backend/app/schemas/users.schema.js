@@ -41,4 +41,12 @@ module.exports = {
       following_id: Joi.string().uuid().required(),
     }),
   },
+  unfollowUserSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required(),
+    }),
+    body: Joi.object({
+      following_id: Joi.string().uuid().required(),
+    }),
+  },
 };

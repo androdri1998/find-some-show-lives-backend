@@ -422,4 +422,90 @@ describe("Users", () => {
     expect(response.body).toHaveProperty("error");
     expect(response.body).toHaveProperty("error_description");
   });
+
+  it("should unfollow user", async () => {
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const follow = {
+      id: uuid(),
+      follower_id: uuid(),
+      following_id: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await followUserRepository(follow);
+
+    const response = await request(app)
+      .put(`/users/unfollow-user`)
+      .send({ following_id: follow.following_id })
+      .set(
+        "Authorization",
+        `Bearer ${generateToken({ id: follow.follower_id })}`
+      );
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
+  });
+
+  it("should return error 400 in unfollow user", async () => {
+    const response = await request(app)
+      .put(`/users/unfollow-user`)
+      .set("Authorization", `Bearer ${generateToken({ id: "teste" })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 in unfollow user", async () => {
+    const response = await request(app).put(`/users/unfollow-user`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 409 in unfollow user", async () => {
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const follow = {
+      id: uuid(),
+      follower_id: uuid(),
+      following_id: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: false,
+    };
+    await followUserRepository(follow);
+
+    const response = await request(app)
+      .put(`/users/unfollow-user`)
+      .send({ following_id: follow.following_id })
+      .set(
+        "Authorization",
+        `Bearer ${generateToken({ id: follow.follower_id })}`
+      );
+
+    expect(response.status).toBe(409);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should logout user from application", async () => {
+    const response = await request(app)
+      .put(`/users/logout`)
+      .set("Authorization", `Bearer ${generateToken({ id: "teste" })}`);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
+  });
+
+  it("should return error 401 in logout user", async () => {
+    const response = await request(app).put(`/users/logout`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
 });

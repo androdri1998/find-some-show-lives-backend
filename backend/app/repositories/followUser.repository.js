@@ -21,4 +21,19 @@ module.exports = {
 
     return response;
   },
+  dropFollowRepository: async (params) => {
+    let response;
+    try {
+      response = await FollowUser.update(
+        { active: false },
+        {
+          where: { ...params },
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
+
+    return response;
+  },
 };

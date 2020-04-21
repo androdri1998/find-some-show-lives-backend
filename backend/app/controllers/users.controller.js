@@ -68,4 +68,32 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  unfollowUser: async (req, res) => {
+    try {
+      const response = await usersFactory.unfollowUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(201).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
+  logoutUser: async (req, res) => {
+    try {
+      const response = await usersFactory.logoutUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(201).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };

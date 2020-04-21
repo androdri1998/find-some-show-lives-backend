@@ -16,6 +16,7 @@ const {
 const {
   followUserRepository,
   getOneFollowRepository,
+  dropFollowRepository,
 } = require("../repositories/followUser.repository");
 
 module.exports = {
@@ -116,6 +117,42 @@ module.exports = {
     return {
       id: followId,
       message: "User followed with success.",
+    };
+  },
+  unfollowUser: async (params) => {
+    const { userId, following_id } = params,
+      whereFollow = {
+        [Op.and]: [
+          { follower_id: userId },
+          { following_id: following_id },
+          { active: true },
+        ],
+      };
+
+    let alreadyFollow;
+    try {
+      alreadyFollow = await getOneFollowRepository(whereFollow);
+      if (!alreadyFollow)
+        throw new CustomConflictError("Already unfollow user");
+    } catch (err) {
+      throw err;
+    }
+
+    try {
+      await dropFollowRepository(whereFollow);
+    } catch (err) {
+      throw err;
+    }
+
+    return {
+      id: alreadyFollow.id,
+      message: "User unfollowed with success.",
+    };
+  },
+  logoutUser: async (params) => {
+    return {
+      id: params.userId,
+      message: "Logout with success.",
     };
   },
 };
