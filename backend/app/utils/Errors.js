@@ -1,4 +1,4 @@
-const httpStatusCode = require('http-status-codes');
+const httpStatusCode = require("http-status-codes");
 
 class CustomConflictError extends Error {
   constructor(message = "Item already created") {
@@ -40,5 +40,5 @@ module.exports = {
   CustomConflictError,
   CustomBadRequestError,
   CustomUnauthorizedError,
-  CustomNotFoundError
-}
+  CustomNotFoundError,
+};

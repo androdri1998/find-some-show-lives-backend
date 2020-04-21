@@ -1,15 +1,15 @@
-const moment = require('moment');
-const bcrypt = require('bcryptjs');
-const uuid = require('uuid/v4');
-const { CustomConflictError } = require('../utils/Errors');
-const { createUserRepository } = require('../repositories/users.repository');
+const moment = require("moment");
+const bcrypt = require("bcryptjs");
+const uuid = require("uuid/v4");
+const { CustomConflictError } = require("../utils/Errors");
+const { createUserRepository } = require("../repositories/users.repository");
 
 module.exports = {
   createUsersService: async ({ email, name, password }) => {
     const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
     let user;
     const hash_password = await bcrypt.hash(password, 8);
-    try{
+    try {
       user = await createUserRepository({
         id: uuid(),
         name: name,
@@ -18,12 +18,12 @@ module.exports = {
         password: hash_password,
         created_at: createdAt,
         updated_at: createdAt,
-        active: true
+        active: true,
       });
-    } catch(err) {
+    } catch (err) {
       throw new CustomConflictError(err.message);
     }
 
     return user;
-  }
-}
+  },
+};

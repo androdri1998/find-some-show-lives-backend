@@ -1,11 +1,11 @@
-const { User } = require('../models');
+const { User } = require("../models");
 
-module.exports={
+module.exports = {
   createUserRepository: async (params) => {
     let user;
-    try{
+    try {
       user = await User.create(params);
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
 
@@ -13,27 +13,27 @@ module.exports={
   },
   getOneUserRepository: async (params) => {
     let user;
-    try{
+    try {
       user = await User.findOne({ where: { ...params } });
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
 
     return user;
   },
-  getUsersRepository: async ({ limit = 10, offset = 0, ...params}) => {
+  getUsersRepository: async ({ limit = 10, offset = 0, ...params }) => {
     let responseQuery;
-    try{
+    try {
       responseQuery = await User.findAndCountAll({
-        attributes: { exclude: ['password'] },
+        attributes: { exclude: ["password"] },
         where: { ...params },
         offset: offset,
-        limit: limit
+        limit: limit,
       });
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
 
-    return [ responseQuery.count, responseQuery.rows ];
-  }
-}
+    return [responseQuery.count, responseQuery.rows];
+  },
+};

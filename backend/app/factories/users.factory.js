@@ -1,46 +1,50 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
-const { createUsersService } = require('../services/users.service');
-const { CustomUnauthorizedError, CustomNotFoundError } = require('../utils/Errors');
-const { getOneUserRepository, getUsersRepository } = require('../repositories/users.repository');
+const { createUsersService } = require("../services/users.service");
+const {
+  CustomUnauthorizedError,
+  CustomNotFoundError,
+} = require("../utils/Errors");
+const {
+  getOneUserRepository,
+  getUsersRepository,
+} = require("../repositories/users.repository");
 
 module.exports = {
   createUsers: async (params) => {
     let user;
-    try{
+    try {
       user = await createUsersService(params);
-    } catch(err) {
+    } catch (err) {
       throw err;
     }
-  
+
     return {
       id: user.id,
-      message: "User created with sucess"
-    }
+      message: "User created with sucess",
+    };
   },
   authenticateUser: async (params) => {
     const { email, password } = params;
 
     const user = await getOneUserRepository({ email });
-    if(!user)
-      throw new CustomUnauthorizedError("User not found");
+    if (!user) throw new CustomUnauthorizedError("User not found");
 
-    if(!(await bcrypt.compare(password, user.password)))
+    if (!(await bcrypt.compare(password, user.password)))
       throw new CustomUnauthorizedError("Incorrect password");
 
     const access_token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
 
     return {
-      access_token: access_token
-    }
+      access_token: access_token,
+    };
   },
   getUser: async (params) => {
     const { user_id } = params;
 
     const user = await getOneUserRepository({ id: user_id });
-    if(!user)
-      throw new CustomNotFoundError("User not found");
+    if (!user) throw new CustomNotFoundError("User not found");
 
     user.password = undefined;
 
@@ -52,23 +56,23 @@ module.exports = {
     const offset = page_size * page;
 
     let where = {};
-    if(search){
+    if (search) {
       where = {
         name: {
-          [Op.like]: `${search}%`
-        }
-      }
+          [Op.like]: `${search}%`,
+        },
+      };
     }
 
-    const [total , users] = await getUsersRepository({ 
-      limit: page_size, 
+    const [total, users] = await getUsersRepository({
+      limit: page_size,
       offset: offset,
-      ...where
+      ...where,
     });
 
     return {
       total: total,
-      results: users
+      results: users,
     };
-  }
-}
+  },
+};

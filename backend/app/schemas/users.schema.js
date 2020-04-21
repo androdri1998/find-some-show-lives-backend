@@ -1,30 +1,36 @@
-const Joi = require('@hapi/joi');
+const Joi = require("@hapi/joi");
 
 module.exports = {
   createUserSchema: {
     body: Joi.object({
-      email: Joi.string().min(1).email({ minDomainSegments: 2, tlds: { allow: ['com'] } }).required(),
+      email: Joi.string()
+        .min(1)
+        .email({ minDomainSegments: 2, tlds: { allow: ["com"] } })
+        .required(),
       name: Joi.string().min(1).required(),
       password: Joi.string().min(6).required(),
-      confirm_password: Joi.ref('password')
-    })
+      confirm_password: Joi.ref("password"),
+    }),
   },
   authenticateUserSchema: {
     body: Joi.object({
-      email: Joi.string().min(1).email({ minDomainSegments: 2, tlds: { allow: ['com'] } }).required(),
-      password: Joi.string().min(6).required()
-    })
+      email: Joi.string()
+        .min(1)
+        .email({ minDomainSegments: 2, tlds: { allow: ["com"] } })
+        .required(),
+      password: Joi.string().min(6).required(),
+    }),
   },
   getUserSchema: {
     params: Joi.object({
-      user_id: Joi.string().uuid().required() 
-    })
+      user_id: Joi.string().uuid().required(),
+    }),
   },
   getUsersSchema: {
     query: Joi.object({
       page: Joi.number().integer(),
       page_size: Joi.number().integer(),
-      search: Joi.string().min(1)
-    })
+      search: Joi.string().min(1),
+    }),
   },
-}
+};

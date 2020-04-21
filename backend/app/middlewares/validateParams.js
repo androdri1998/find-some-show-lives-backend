@@ -1,7 +1,7 @@
-const applicationService = require('../services/application.service');
-const { CustomBadRequestError } = require('../utils/Errors');
+const applicationService = require("../services/application.service");
+const { CustomBadRequestError } = require("../utils/Errors");
 
-module.exports = ( schema, scope ) => async (req, res, next) => {
+module.exports = (schema, scope) => async (req, res, next) => {
   try {
     await schema[scope].validateAsync(req[scope]);
     return next();
@@ -10,4 +10,4 @@ module.exports = ( schema, scope ) => async (req, res, next) => {
     const [status, error] = applicationService.switchError(customError);
     return res.status(status).json(error);
   }
-}
+};
