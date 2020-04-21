@@ -1,3 +1,8 @@
+require("dotenv").config({
+  path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
+});
+const jwt = require("jsonwebtoken");
+
 module.exports = {
   switchError: (err) => {
     return [
@@ -10,5 +15,8 @@ module.exports = {
             : err.message,
       },
     ];
+  },
+  generateToken: (encode = {}) => {
+    return jwt.sign(encode, process.env.APP_SECRET);
   },
 };

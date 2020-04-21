@@ -3,6 +3,7 @@ const faker = require("faker");
 const app = require("../../app");
 const truncate = require("../utils/truncate");
 const { createUsersService } = require("../../app/services/users.service");
+const { generateToken } = require("../../app/services/application.service");
 
 describe("Users", () => {
   beforeEach(async () => {
@@ -19,14 +20,9 @@ describe("Users", () => {
 
     const userCreated = await createUsersService(user);
 
-    const responseAuth = await request(app).post("/users/auth").send({
-      email: user.email,
-      password: user.password,
-    });
-
     const response = await request(app)
       .get(`/users/${userCreated.id}`)
-      .set("Authorization", `Bearer ${responseAuth.body.access_token}`);
+      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(200);
   });
@@ -57,14 +53,9 @@ describe("Users", () => {
 
     await createUsersService(user);
 
-    const responseAuth = await request(app).post("/users/auth").send({
-      email: user.email,
-      password: user.password,
-    });
-
     const response = await request(app)
       .get(`/users/${uuidUser}`)
-      .set("Authorization", `Bearer ${responseAuth.body.access_token}`);
+      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("error");

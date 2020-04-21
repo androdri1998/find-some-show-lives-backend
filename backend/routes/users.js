@@ -24,14 +24,14 @@ routes.post(
 
 routes.use(authMiddleware);
 routes.get(
-  "/",
-  validateParams(getUsersSchema, "query"),
-  usersController.getUsers
-);
-routes.get(
   "/:user_id",
   validateParams(getUserSchema, "params"),
   usersController.getUser
+);
+routes.get(
+  "/",
+  validateParams(getUsersSchema, "query"),
+  usersController.getUsers
 );
 
 module.exports = routes;

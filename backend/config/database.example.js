@@ -7,7 +7,7 @@ module.exports = {
   password: [password],
   database: [name_database],
   host: [host],
-  dialect: [dialect],
+  dialect: [dialect] || "postgres",
   storage: "__tests__/database.sqlite",
   define: {
     underscored: true,

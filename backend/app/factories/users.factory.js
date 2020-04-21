@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
 const { createUsersService } = require("../services/users.service");
+const { generateToken } = require("../services/application.service");
 const {
   CustomUnauthorizedError,
   CustomNotFoundError,
@@ -34,7 +34,7 @@ module.exports = {
     if (!(await bcrypt.compare(password, user.password)))
       throw new CustomUnauthorizedError("Incorrect password");
 
-    const access_token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
+    const access_token = generateToken({ id: user.id });
 
     return {
       access_token: access_token,

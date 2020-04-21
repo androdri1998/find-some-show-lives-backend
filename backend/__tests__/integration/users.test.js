@@ -3,6 +3,7 @@ const faker = require("faker");
 const app = require("../../app");
 const truncate = require("../utils/truncate");
 const { createUsersService } = require("../../app/services/users.service");
+const { generateToken } = require("../../app/services/application.service");
 
 describe("Register users", () => {
   beforeEach(async () => {
@@ -47,7 +48,11 @@ describe("Register users", () => {
       confirm_password: userPass,
     };
 
-    const response = await request(app).post("/users").send(user);
+    await createUsersService({
+      email: user.email,
+      name: user.name,
+      password: user.password,
+    });
 
     const secondResponse = await request(app).post("/users").send(user);
 
@@ -192,14 +197,9 @@ describe("Users", () => {
     };
     await createUsersService(user4);
 
-    const responseAuth = await request(app).post("/users/auth").send({
-      email: user1.email,
-      password: user1.password,
-    });
-
     const response = await request(app)
       .get(`/users`)
-      .set("Authorization", `Bearer ${responseAuth.body.access_token}`);
+      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("total");
@@ -237,17 +237,12 @@ describe("Users", () => {
     };
     await createUsersService(user4);
 
-    const responseAuth = await request(app).post("/users/auth").send({
-      email: user1.email,
-      password: user1.password,
-    });
-
     const response = await request(app)
       .get(`/users`)
       .query({
         search: `test`,
       })
-      .set("Authorization", `Bearer ${responseAuth.body.access_token}`);
+      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("total");
@@ -285,18 +280,13 @@ describe("Users", () => {
     };
     await createUsersService(user4);
 
-    const responseAuth = await request(app).post("/users/auth").send({
-      email: user1.email,
-      password: user1.password,
-    });
-
     const response = await request(app)
       .get(`/users`)
       .query({
         page: 0,
         page_size: 2,
       })
-      .set("Authorization", `Bearer ${responseAuth.body.access_token}`);
+      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("total");
@@ -313,17 +303,12 @@ describe("Users", () => {
     };
     await createUsersService(user1);
 
-    const responseAuth = await request(app).post("/users/auth").send({
-      email: user1.email,
-      password: user1.password,
-    });
-
     const response = await request(app)
       .get(`/users`)
       .query({
         teste: 2,
       })
-      .set("Authorization", `Bearer ${responseAuth.body.access_token}`);
+      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("error");
