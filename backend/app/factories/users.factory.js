@@ -87,7 +87,11 @@ module.exports = {
 
     try {
       const alreadyFollow = await getOneFollowRepository({
-        [Op.and]: [{ follower_id: userId }, { following_id: following_id }],
+        [Op.and]: [
+          { follower_id: userId },
+          { following_id: following_id },
+          { active: true },
+        ],
       });
       if (alreadyFollow) throw new CustomConflictError("Already follow user");
     } catch (err) {
