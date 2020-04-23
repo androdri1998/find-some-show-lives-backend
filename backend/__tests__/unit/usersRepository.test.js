@@ -5,6 +5,7 @@ const faker = require("faker");
 const {
   createUserRepository,
   getOneUserRepository,
+  updateUserRepository,
 } = require("../../app/repositories/users.repository");
 const { createUsersService } = require("../../app/services/users.service");
 const truncate = require("../utils/truncate");
@@ -57,5 +58,24 @@ describe("Users Repository", () => {
     expect(() => {
       throw requestError;
     }).toThrow(error);
+  });
+
+  it("should update user in repository", async () => {
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const user = {
+      id: uuid(),
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      profile_photo: null,
+      password: await bcrypt.hash(faker.internet.password(), 8),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await createUserRepository(user);
+    await updateUserRepository({ active: false }, { id: user.id });
+    const userUpdated = await getOneUserRepository({ id: user.id });
+
+    expect(userUpdated.active).toBe(false);
   });
 });

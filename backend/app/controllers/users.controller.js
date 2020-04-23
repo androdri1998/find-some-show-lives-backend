@@ -96,4 +96,47 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  updateUser: async (req, res) => {
+    try {
+      const response = await usersFactory.updateUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(201).json(response);
+    } catch (err) {
+      console.log(err);
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
+  updateEmailUser: async (req, res) => {
+    try {
+      const response = await usersFactory.updateEmailUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(201).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const response = await usersFactory.deleteUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(200).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };

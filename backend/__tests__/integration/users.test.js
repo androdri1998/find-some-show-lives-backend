@@ -508,4 +508,156 @@ describe("Users", () => {
     expect(response.body).toHaveProperty("error");
     expect(response.body).toHaveProperty("error_description");
   });
+
+  it("should update user in application", async () => {
+    const userPass = faker.internet.password();
+
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated = await createUsersService(user);
+
+    const response = await request(app)
+      .put(`/users/${userCreated.id}`)
+      .send({
+        photo: "test image",
+        name: "new name",
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: user.id })}`);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
+  });
+
+  it("should return error 404 in update user in application", async () => {
+    const response = await request(app)
+      .put(`/users/${uuid()}`)
+      .send({
+        photo: "test image",
+        name: "new name",
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: "test" })}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 400 in update user in application", async () => {
+    const response = await request(app)
+      .put(`/users/${uuid()}`)
+      .send({
+        test: "test image",
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: "test" })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 in update user in application", async () => {
+    const response = await request(app).put(`/users/${uuid()}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should update email of user in application", async () => {
+    const userPass = faker.internet.password();
+
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated = await createUsersService(user);
+
+    const newEmail = faker.internet.email();
+    const response = await request(app)
+      .put(`/users/${userCreated.id}/update-email`)
+      .send({
+        email: newEmail,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userCreated.id })}`);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
+  });
+
+  it("should return error 404 in update email user in application", async () => {
+    const response = await request(app)
+      .put(`/users/${uuid()}/update-email`)
+      .send({
+        email: faker.internet.email(),
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: "test" })}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 400 in update email user in application", async () => {
+    const response = await request(app)
+      .put(`/users/${uuid()}/update-email`)
+      .send({
+        test: "test image",
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: "test" })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 in update email user in application", async () => {
+    const response = await request(app).put(`/users/${uuid()}/update-email`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should delete user in application", async () => {
+    const userPass = faker.internet.password();
+
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated = await createUsersService(user);
+
+    const response = await request(app)
+      .delete(`/users/${userCreated.id}`)
+      .set("Authorization", `Bearer ${generateToken({ id: userCreated.id })}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("id");
+    expect(response.body).toHaveProperty("message");
+  });
+
+  it("should return error 404 in delete user in application", async () => {
+    const response = await request(app)
+      .delete(`/users/${uuid()}`)
+      .set("Authorization", `Bearer ${generateToken({ id: uuid() })}`);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 in delete user in application", async () => {
+    const response = await request(app).delete(`/users/${uuid()}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
 });

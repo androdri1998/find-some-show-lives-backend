@@ -11,6 +11,8 @@ const {
   getUsersSchema,
   followUserSchema,
   unfollowUserSchema,
+  putUserSchema,
+  updateEmailUserSchema,
 } = require("../app/schemas/users.schema");
 
 routes.post(
@@ -45,6 +47,23 @@ routes.get(
   "/:user_id",
   validateParams(getUserSchema, "params"),
   usersController.getUser
+);
+routes.put(
+  "/:user_id",
+  [
+    validateParams(putUserSchema, "params"),
+    validateParams(putUserSchema, "body"),
+  ],
+  usersController.updateUser
+);
+routes.delete("/:user_id", usersController.deleteUser);
+routes.put(
+  "/:user_id/update-email",
+  [
+    validateParams(updateEmailUserSchema, "params"),
+    validateParams(updateEmailUserSchema, "body"),
+  ],
+  usersController.updateEmailUser
 );
 
 module.exports = routes;

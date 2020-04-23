@@ -34,19 +34,32 @@ module.exports = {
     }),
   },
   followUserSchema: {
-    params: Joi.object({
-      user_id: Joi.string().uuid().required(),
-    }),
     body: Joi.object({
       following_id: Joi.string().uuid().required(),
     }),
   },
   unfollowUserSchema: {
+    body: Joi.object({
+      following_id: Joi.string().uuid().required(),
+    }),
+  },
+  putUserSchema: {
     params: Joi.object({
       user_id: Joi.string().uuid().required(),
     }),
     body: Joi.object({
-      following_id: Joi.string().uuid().required(),
+      photo: Joi.string(),
+      name: Joi.string(),
+    }),
+  },
+  updateEmailUserSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required(),
+    }),
+    body: Joi.object({
+      email: Joi.string()
+        .min(1)
+        .email({ minDomainSegments: 2, tlds: { allow: ["com"] } }),
     }),
   },
 };

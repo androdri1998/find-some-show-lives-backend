@@ -12,6 +12,7 @@ const {
 const {
   getOneUserRepository,
   getUsersRepository,
+  updateUserRepository,
 } = require("../repositories/users.repository");
 const {
   followUserRepository,
@@ -153,6 +154,54 @@ module.exports = {
     return {
       id: params.userId,
       message: "Logout with success.",
+    };
+  },
+  updateUser: async (params) => {
+    const { user_id, ...userUpdate } = params;
+    const user = await getOneUserRepository({ id: user_id });
+    if (!user) throw new CustomNotFoundError("User not found");
+
+    try {
+      await updateUserRepository(userUpdate, { id: user_id });
+    } catch (err) {
+      throw err;
+    }
+
+    return {
+      id: user_id,
+      message: "User updated with success.",
+    };
+  },
+  updateEmailUser: async (params) => {
+    const { user_id, ...userUpdate } = params;
+    const user = await getOneUserRepository({ id: user_id });
+    if (!user) throw new CustomNotFoundError("User not found");
+
+    try {
+      await updateUserRepository(userUpdate, { id: user_id });
+    } catch (err) {
+      throw err;
+    }
+
+    return {
+      id: user_id,
+      message: "Email user updated with success.",
+    };
+  },
+  deleteUser: async (params) => {
+    const { user_id } = params;
+    const user = await getOneUserRepository({ id: user_id });
+    if (!user) throw new CustomNotFoundError("User not found");
+
+    try {
+      await updateUserRepository({ active: false }, { id: user_id });
+    } catch (err) {
+      throw err;
+    }
+
+    return {
+      id: user_id,
+      message: "Email user updated with success.",
     };
   },
 };

@@ -36,4 +36,16 @@ module.exports = {
 
     return [responseQuery.count, responseQuery.rows];
   },
+  updateUserRepository: async (newUser, params) => {
+    let user;
+    try {
+      user = await User.update(newUser, {
+        where: { ...params },
+      });
+    } catch (err) {
+      throw err;
+    }
+
+    return user;
+  },
 };
