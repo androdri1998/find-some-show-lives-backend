@@ -14,7 +14,7 @@ describe("Follow User Repository", () => {
   });
 
   it("should follow user by repository", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const user = {
       id: uuid(),
       follower_id: uuid(),
@@ -29,7 +29,7 @@ describe("Follow User Repository", () => {
   });
 
   it("should get one follow by user in repository", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const follow = {
       id: uuid(),
       follower_id: uuid(),
@@ -45,7 +45,7 @@ describe("Follow User Repository", () => {
   });
 
   it("should drop follow by user in repository", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const follow = {
       id: uuid(),
       follower_id: uuid(),

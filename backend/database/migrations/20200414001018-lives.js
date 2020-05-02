@@ -20,6 +20,10 @@ module.exports = {
         allowNull: false,
         type: DataTypes.DATE,
       },
+      reminder_in: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
       creator: {
         allowNull: false,
         type: DataTypes.STRING,

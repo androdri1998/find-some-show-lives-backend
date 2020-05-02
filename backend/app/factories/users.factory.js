@@ -103,7 +103,7 @@ module.exports = {
 
     const followId = uuid();
     try {
-      const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+      const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
       await followUserRepository({
         id: followId,
         follower_id: userId,

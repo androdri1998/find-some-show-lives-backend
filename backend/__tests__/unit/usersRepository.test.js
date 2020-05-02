@@ -16,7 +16,7 @@ describe("Users Repository", () => {
   });
 
   it("should create user in repository", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const user = {
       id: uuid(),
       email: faker.internet.email(),
@@ -61,7 +61,7 @@ describe("Users Repository", () => {
   });
 
   it("should update user in repository", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const user = {
       id: uuid(),
       email: faker.internet.email(),

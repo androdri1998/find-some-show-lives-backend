@@ -6,7 +6,7 @@ const { createUserRepository } = require("../repositories/users.repository");
 
 module.exports = {
   createUsersService: async ({ email, name, password }) => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     let user;
     const hash_password = await bcrypt.hash(password, 8);
     try {

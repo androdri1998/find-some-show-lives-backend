@@ -23,7 +23,7 @@ describe("Users", () => {
     };
 
     const hash_password = await bcrypt.hash(user.password, 8);
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const userCreated = await User.create({
       id: uuid(),
       name: user.name,

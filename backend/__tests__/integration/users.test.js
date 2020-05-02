@@ -403,7 +403,7 @@ describe("Users", () => {
     };
     const user2created = await createUsersService(user2);
 
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const follow = {
       id: uuid(),
       follower_id: user1created.id,
@@ -425,7 +425,7 @@ describe("Users", () => {
   });
 
   it("should unfollow user", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const follow = {
       id: uuid(),
       follower_id: uuid(),
@@ -468,7 +468,7 @@ describe("Users", () => {
   });
 
   it("should return error 409 in unfollow user", async () => {
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     const follow = {
       id: uuid(),
       follower_id: uuid(),
@@ -664,7 +664,7 @@ describe("Users", () => {
 
   it("should return followings users", async () => {
     const userId = uuid();
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     await FollowUser.create({
       id: uuid(),
       follower_id: userId,
@@ -738,7 +738,7 @@ describe("Users", () => {
 
   it("should return followers users", async () => {
     const userId = uuid();
-    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
     await FollowUser.create({
       id: uuid(),
       follower_id: uuid(),
