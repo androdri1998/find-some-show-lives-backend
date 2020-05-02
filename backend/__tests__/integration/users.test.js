@@ -9,6 +9,7 @@ const { generateToken } = require("../../app/services/application.service");
 const {
   followUserRepository,
 } = require("../../app/repositories/followUser.repository");
+const { FollowUser } = require("../../app/models");
 
 describe("Register users", () => {
   beforeEach(async () => {
@@ -655,6 +656,154 @@ describe("Users", () => {
 
   it("should return error 401 in delete user in application", async () => {
     const response = await request(app).delete(`/users/${uuid()}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return followings users", async () => {
+    const userId = uuid();
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: userId,
+      following_id: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: userId,
+      following_id: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: userId,
+      following_id: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: userId,
+      following_id: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+
+    const response = await request(app)
+      .get(`/users/${userId}/followings`)
+      .query({
+        page: 0,
+        page_size: 2,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userId })}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it("should return error 400 to followings users", async () => {
+    const userId = uuid();
+
+    const response = await request(app)
+      .get(`/users/${userId}/followings`)
+      .query({
+        test: 0,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userId })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 to followings users", async () => {
+    const userId = uuid();
+
+    const response = await request(app).get(`/users/${userId}/followings`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return followers users", async () => {
+    const userId = uuid();
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: uuid(),
+      following_id: userId,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: uuid(),
+      following_id: userId,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: uuid(),
+      following_id: userId,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+    await FollowUser.create({
+      id: uuid(),
+      follower_id: uuid(),
+      following_id: userId,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+
+    const response = await request(app)
+      .get(`/users/${userId}/followers`)
+      .query({
+        page: 0,
+        page_size: 2,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userId })}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it("should return error 400 to followers users", async () => {
+    const userId = uuid();
+
+    const response = await request(app)
+      .get(`/users/${userId}/followers`)
+      .query({
+        test: 0,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userId })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 to followers users", async () => {
+    const userId = uuid();
+
+    const response = await request(app).get(`/users/${userId}/followers`);
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty("error");

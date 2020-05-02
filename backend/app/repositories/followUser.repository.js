@@ -21,6 +21,20 @@ module.exports = {
 
     return response;
   },
+  getFollowsRepository: async ({ limit = 10, offset = 0, ...params }) => {
+    let responseQuery;
+    try {
+      responseQuery = await FollowUser.findAndCountAll({
+        where: { ...params },
+        offset: offset,
+        limit: limit,
+      });
+    } catch (err) {
+      throw err;
+    }
+
+    return [responseQuery.count, responseQuery.rows];
+  },
   dropFollowRepository: async (params) => {
     let response;
     try {

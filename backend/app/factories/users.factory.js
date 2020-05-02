@@ -18,6 +18,7 @@ const {
   followUserRepository,
   getOneFollowRepository,
   dropFollowRepository,
+  getFollowsRepository,
 } = require("../repositories/followUser.repository");
 
 module.exports = {
@@ -202,6 +203,40 @@ module.exports = {
     return {
       id: user_id,
       message: "Email user updated with success.",
+    };
+  },
+  getFollowings: async (params) => {
+    const { page = 0, page_size = 10, user_id } = params;
+
+    const offset = page_size * page;
+
+    const [total, follows] = await getFollowsRepository({
+      limit: page_size,
+      offset: offset,
+      follower_id: user_id,
+      active: true,
+    });
+
+    return {
+      total: total,
+      results: follows,
+    };
+  },
+  getFollowers: async (params) => {
+    const { page = 0, page_size = 10, user_id } = params;
+
+    const offset = page_size * page;
+
+    const [total, follows] = await getFollowsRepository({
+      limit: page_size,
+      offset: offset,
+      following_id: user_id,
+      active: true,
+    });
+
+    return {
+      total: total,
+      results: follows,
     };
   },
 };

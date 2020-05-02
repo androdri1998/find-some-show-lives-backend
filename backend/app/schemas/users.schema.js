@@ -62,4 +62,22 @@ module.exports = {
         .email({ minDomainSegments: 2, tlds: { allow: ["com"] } }),
     }),
   },
+  getFollowingsSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required(),
+    }),
+    query: Joi.object({
+      page: Joi.number().integer().default(0),
+      page_size: Joi.number().integer().default(15),
+    }),
+  },
+  getFollowersSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required(),
+    }),
+    query: Joi.object({
+      page: Joi.number().integer().default(0),
+      page_size: Joi.number().integer().default(15),
+    }),
+  },
 };

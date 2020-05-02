@@ -316,7 +316,7 @@ paths:
           type: number
           required: false
       responses:
-        "201":
+        "200":
           description: Successful operation
           schema:
             $ref: "#/definitions/listUsers"
@@ -357,7 +357,7 @@ paths:
           type: number
           required: false
       responses:
-        "201":
+        "200":
           description: Successful operation
           schema:
             $ref: "#/definitions/listUsers"

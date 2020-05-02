@@ -13,6 +13,8 @@ const {
   unfollowUserSchema,
   putUserSchema,
   updateEmailUserSchema,
+  getFollowingsSchema,
+  getFollowersSchema,
 } = require("../app/schemas/users.schema");
 
 routes.post(
@@ -64,6 +66,24 @@ routes.put(
     validateParams(updateEmailUserSchema, "body"),
   ],
   usersController.updateEmailUser
+);
+
+routes.get(
+  "/:user_id/followings",
+  [
+    validateParams(getFollowingsSchema, "params"),
+    validateParams(getFollowingsSchema, "query"),
+  ],
+  usersController.getFollowings
+);
+
+routes.get(
+  "/:user_id/followers",
+  [
+    validateParams(getFollowersSchema, "params"),
+    validateParams(getFollowersSchema, "query"),
+  ],
+  usersController.getFollowers
 );
 
 module.exports = routes;

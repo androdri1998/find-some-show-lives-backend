@@ -1,9 +1,13 @@
 const request = require("supertest");
 const faker = require("faker");
+const moment = require("moment");
+const bcrypt = require("bcryptjs");
+const uuid = require("uuid/v4");
 const app = require("../../app");
 const truncate = require("../utils/truncate");
 const { createUsersService } = require("../../app/services/users.service");
 const { generateToken } = require("../../app/services/application.service");
+const { User } = require("../../app/models");
 
 describe("Users", () => {
   beforeEach(async () => {
@@ -17,11 +21,23 @@ describe("Users", () => {
       name: faker.name.findName(),
       password: userPass,
     };
-    const userCreated = await createUsersService(user);
+
+    const hash_password = await bcrypt.hash(user.password, 8);
+    const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+    const userCreated = await User.create({
+      id: uuid(),
+      name: user.name,
+      email: user.email,
+      profile_photo: null,
+      password: hash_password,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
 
     const response = await request(app)
       .get(`/users/${userCreated.id}`)
-      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
+      .set("Authorization", `Bearer ${generateToken({ id: userCreated.id })}`);
 
     expect(response.status).toBe(200);
   });
