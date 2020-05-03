@@ -10,4 +10,11 @@ module.exports = {
       reminder: Joi.number().integer().required(),
     }),
   },
+  getLivesSchema: {
+    query: Joi.object({
+      page: Joi.number().integer(),
+      page_size: Joi.number().integer(),
+      search: Joi.string().min(1),
+    }),
+  },
 };
