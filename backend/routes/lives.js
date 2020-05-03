@@ -8,6 +8,8 @@ const {
   createLiveSchema,
   getLivesSchema,
   deleteLiveSchema,
+  saveLiveSchema,
+  unsaveLiveSchema,
 } = require("../app/schemas/lives.schema");
 
 routes.use(authMiddleware);
@@ -28,6 +30,18 @@ routes.delete(
   "/:live_id",
   validateParams(deleteLiveSchema, "params"),
   livesController.deleteLive
+);
+
+routes.put(
+  "/:live_id/save-live",
+  validateParams(saveLiveSchema, "params"),
+  livesController.saveLive
+);
+
+routes.put(
+  "/:live_id/unsave-live",
+  validateParams(unsaveLiveSchema, "params"),
+  livesController.unsaveLive
 );
 
 module.exports = routes;

@@ -9,6 +9,10 @@ const {
   updateLiveRepository,
 } = require("../repositories/lives.repository");
 const { getOneUserRepository } = require("../repositories/users.repository");
+const {
+  savedLiveRepository,
+  unsaveLiveRepository,
+} = require("../repositories/savedLive.repository");
 
 module.exports = {
   createLiveFactory: async (params) => {
@@ -120,6 +124,54 @@ module.exports = {
     return {
       total: total,
       results: lives,
+    };
+  },
+  saveLiveFactory: async (params) => {
+    let saved;
+    const { live_id, userId } = params;
+    try {
+      const user = await getOneUserRepository({ id: userId });
+      if (!user) throw new CustomNotFoundError("User not found");
+
+      const live = await getOneLiveRepository({ id: live_id });
+      if (!live) throw new CustomNotFoundError("Live not found");
+
+      const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+      const savedLiveParams = {
+        id: uuid(),
+        user_id: userId,
+        live_id: live_id,
+        created_at: createdAt,
+        updated_at: createdAt,
+        active: true,
+      };
+      saved = await savedLiveRepository(savedLiveParams);
+    } catch (err) {
+      throw err;
+    }
+
+    return {
+      id: saved.id,
+      message: "Live saved with sucess",
+    };
+  },
+  unsaveLiveFactory: async (params) => {
+    const { live_id, userId } = params;
+    try {
+      const user = await getOneUserRepository({ id: userId });
+      if (!user) throw new CustomNotFoundError("User not found");
+
+      const live = await getOneLiveRepository({ id: live_id });
+      if (!live) throw new CustomNotFoundError("Live not found");
+
+      await unsaveLiveRepository({ live_id: live_id, user_id: userId });
+    } catch (err) {
+      throw err;
+    }
+
+    return {
+      id: live_id,
+      message: "Live unsaved with sucess",
     };
   },
 };

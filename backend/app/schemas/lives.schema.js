@@ -32,4 +32,14 @@ module.exports = {
       search: Joi.string().min(1),
     }),
   },
+  saveLiveSchema: {
+    params: Joi.object({
+      live_id: Joi.string().uuid().required(),
+    }),
+  },
+  unsaveLiveSchema: {
+    params: Joi.object({
+      live_id: Joi.string().uuid().required(),
+    }),
+  },
 };

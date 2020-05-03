@@ -58,4 +58,32 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  saveLive: async (req, res) => {
+    try {
+      const response = await livesFactory.saveLiveFactory({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(201).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
+  unsaveLive: async (req, res) => {
+    try {
+      const response = await livesFactory.unsaveLiveFactory({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(200).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };

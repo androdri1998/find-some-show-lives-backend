@@ -1,0 +1,31 @@
+const moment = require("moment");
+const { SavedLive } = require("../models");
+
+module.exports = {
+  savedLiveRepository: async (params) => {
+    let response;
+    try {
+      response = await SavedLive.create(params);
+    } catch (err) {
+      throw err;
+    }
+
+    return response;
+  },
+  unsaveLiveRepository: async (params) => {
+    let response;
+    const updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
+    try {
+      response = await SavedLive.update(
+        { active: false, updated_at: updatedAt },
+        {
+          where: { ...params },
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
+
+    return response;
+  },
+};

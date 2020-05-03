@@ -1,3 +1,4 @@
+const moment = require("moment");
 const { FollowUser } = require("../models");
 
 module.exports = {
@@ -37,9 +38,10 @@ module.exports = {
   },
   dropFollowRepository: async (params) => {
     let response;
+    const updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
     try {
       response = await FollowUser.update(
-        { active: false },
+        { active: false, updated_at: updatedAt },
         {
           where: { ...params },
         }
