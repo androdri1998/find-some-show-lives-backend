@@ -30,4 +30,32 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  deleteLive: async (req, res) => {
+    try {
+      const response = await livesFactory.deleteLiveFactory({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(200).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
+  getLivesUser: async (req, res) => {
+    try {
+      const response = await livesFactory.getLivesUserFactory({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(200).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };

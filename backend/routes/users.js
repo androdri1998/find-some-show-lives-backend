@@ -1,5 +1,6 @@
 const routes = require("express").Router();
 const usersController = require("../app/controllers/users.controller");
+const livesController = require("../app/controllers/lives.controller");
 
 const validateParams = require("../app/middlewares/validateParams");
 const authMiddleware = require("../app/middlewares/auth");
@@ -16,6 +17,7 @@ const {
   getFollowingsSchema,
   getFollowersSchema,
 } = require("../app/schemas/users.schema");
+const { getLivesUserSchema } = require("../app/schemas/lives.schema");
 
 routes.post(
   "/",
@@ -84,6 +86,15 @@ routes.get(
     validateParams(getFollowersSchema, "query"),
   ],
   usersController.getFollowers
+);
+
+routes.get(
+  "/:user_id/lives",
+  [
+    validateParams(getLivesUserSchema, "params"),
+    validateParams(getLivesUserSchema, "query"),
+  ],
+  livesController.getLivesUser
 );
 
 module.exports = routes;
