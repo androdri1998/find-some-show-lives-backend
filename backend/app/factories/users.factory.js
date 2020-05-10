@@ -20,6 +20,12 @@ const {
   dropFollowRepository,
   getFollowsRepository,
 } = require("../repositories/followUser.repository");
+const {
+  getSavedLivesRepository
+} = require("../repositories/savedLive.repository");
+const {
+  getLivesRepository
+} = require("../repositories/lives.repository");
 
 module.exports = {
   createUsers: async (params) => {
@@ -237,6 +243,36 @@ module.exports = {
     return {
       total: total,
       results: follows,
+    };
+  },
+  getSavedLivesUser: async (params) => {
+    const { page = 0, page_size = 10, user_id } = params;
+
+    const offset = page_size * page;
+
+    const [total, saveds] = await getSavedLivesRepository({
+      limit: page_size,
+      offset: offset,
+      user_id: user_id,
+      active: true,
+    });
+
+    const livesIds = [];
+    saveds.map(saved => {
+      livesIds.push(saved.live_id);
+    });
+
+    const [,lives ] = await getLivesRepository({
+      limit: page_size,
+      offset: offset,
+      id: {
+        [Op.in]: livesIds
+      },
+    });
+
+    return {
+      total: total,
+      results: lives,
     };
   },
 };

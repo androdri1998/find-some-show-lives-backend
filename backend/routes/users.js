@@ -16,6 +16,7 @@ const {
   updateEmailUserSchema,
   getFollowingsSchema,
   getFollowersSchema,
+  getSavedLivesUserSchema
 } = require("../app/schemas/users.schema");
 const { getLivesUserSchema } = require("../app/schemas/lives.schema");
 
@@ -95,6 +96,15 @@ routes.get(
     validateParams(getLivesUserSchema, "query"),
   ],
   livesController.getLivesUser
+);
+
+routes.get(
+  "/:user_id/saved-lives",
+  [
+    validateParams(getSavedLivesUserSchema, "params"),
+    validateParams(getSavedLivesUserSchema, "query"),
+  ],
+  usersController.getSavedLivesUser
 );
 
 module.exports = routes;

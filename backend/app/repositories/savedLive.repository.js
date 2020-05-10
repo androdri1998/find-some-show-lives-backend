@@ -28,4 +28,18 @@ module.exports = {
 
     return response;
   },
+  getSavedLivesRepository: async ({ limit = 10, offset = 0, ...params }) => {
+    let responseQuery;
+    try {
+      responseQuery = await SavedLive.findAndCountAll({
+        where: { ...params },
+        offset: offset,
+        limit: limit,
+      });
+    } catch (err) {
+      throw err;
+    }
+
+    return [responseQuery.count, responseQuery.rows];
+  },
 };

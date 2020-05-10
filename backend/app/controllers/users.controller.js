@@ -167,4 +167,18 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  getSavedLivesUser: async (req, res) => {
+    try {
+      const response = await usersFactory.getSavedLivesUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(200).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };

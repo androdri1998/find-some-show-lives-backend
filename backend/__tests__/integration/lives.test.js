@@ -427,4 +427,121 @@ describe("Lives", () => {
     expect(response.body).toHaveProperty("error");
     expect(response.body).toHaveProperty("error_description");
   });
+
+  it("should return saved lives", async () => {
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+    const live1 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live1);
+    
+    const live2 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live2);
+
+    const live3 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: uuid(),
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live3);
+
+    const userId = uuid();
+
+    const userPass = faker.internet.password();
+    const user = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+
+    const hash_password = await bcrypt.hash(user.password, 8);
+    await User.create({
+      id: userId,
+      name: user.name,
+      email: user.email,
+      profile_photo: null,
+      password: hash_password,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+
+    const saveLive1 = {
+      id: uuid(),
+      user_id: userId,
+      live_id: live1.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await SavedLive.create(saveLive1);
+
+    const saveLive2 = {
+      id: uuid(),
+      user_id: userId,
+      live_id: live2.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await SavedLive.create(saveLive2);
+
+    const response = await request(app)
+      .get(`/users/${userId}/saved-lives`)
+      .query({
+        page: 0,
+        page_size: 15
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userId })}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it("should return error 400 in saved lives", async () => {
+    const response = await request(app)
+      .get(`/users/${uuid()}/saved-lives`)
+      .query({
+        test: 0,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: uuid() })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 in saved lives", async () => {
+    const response = await request(app)
+      .get(`/users/${uuid()}/saved-lives`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
 });
