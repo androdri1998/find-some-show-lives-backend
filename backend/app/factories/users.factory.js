@@ -275,4 +275,33 @@ module.exports = {
       results: lives,
     };
   },
+  getFollowingsLivesUser: async (params) => {
+    const { page = 0, page_size = 10, user_id } = params;
+
+    const offset = page_size * page;
+
+    const [, follows] = await getFollowsRepository({
+      all: true,
+      following_id: user_id,
+      active: true,
+    });
+
+    const usersIds = [];
+    follows.map(follow => {
+      usersIds.push(follow.following_id);
+    });
+
+    const [ total, lives ] = await getLivesRepository({
+      limit: page_size,
+      offset: offset,
+      creator: {
+        [Op.in]: usersIds
+      },
+    });
+
+    return {
+      total: total,
+      results: lives,
+    };
+  },
 };

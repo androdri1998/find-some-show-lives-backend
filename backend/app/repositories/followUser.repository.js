@@ -22,13 +22,19 @@ module.exports = {
 
     return response;
   },
-  getFollowsRepository: async ({ limit = 10, offset = 0, ...params }) => {
+  getFollowsRepository: async ({ limit = 10, offset = 0, all = false, ...params }) => {
     let responseQuery;
     try {
+      let limitParams = {};
+      if(!all){
+        limitParams = {
+          offset: offset,
+        limit: limit,
+        }
+      }
       responseQuery = await FollowUser.findAndCountAll({
         where: { ...params },
-        offset: offset,
-        limit: limit,
+        ...limitParams
       });
     } catch (err) {
       throw err;

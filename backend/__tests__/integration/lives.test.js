@@ -9,7 +9,7 @@ const { generateToken } = require("../../app/services/application.service");
 const {
   createLiveRepository,
 } = require("../../app/repositories/lives.repository");
-const { User, SavedLive, Live } = require("../../app/models");
+const { User, SavedLive, Live, FollowUser } = require("../../app/models");
 
 describe("Lives", () => {
   beforeEach(async () => {
@@ -539,6 +539,169 @@ describe("Lives", () => {
   it("should return error 401 in saved lives", async () => {
     const response = await request(app)
       .get(`/users/${uuid()}/saved-lives`);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return followings lives", async () => {
+    const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+
+    const userPass = faker.internet.password();
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+
+    const hash_password = await bcrypt.hash(user1.password, 8);
+    const userCreated1 = await User.create({
+      id: uuid(),
+      name: user1.name,
+      email: user1.email,
+      profile_photo: null,
+      password: hash_password,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+
+    const userCreated2 = await User.create({
+      id: uuid(),
+      name: user2.name,
+      email: user2.email,
+      profile_photo: null,
+      password: hash_password,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+
+    const user3 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+
+    const userCreated3 = await User.create({
+      id: uuid(),
+      name: user3.name,
+      email: user3.email,
+      profile_photo: null,
+      password: hash_password,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    });
+
+    const live1 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: userCreated1.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live1);
+    
+    const live2 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: userCreated1.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live2);
+
+    const live3 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: userCreated2.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live3);
+    
+    const live4 = {
+      id: uuid(),
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      date: createdAt,
+      reminder_in: 12,
+      creator: userCreated2.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await Live.create(live4);
+
+    const follow1 = {
+      id: uuid(),
+      follower_id: userCreated3.id,
+      following_id: userCreated2.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await FollowUser.create(follow1);
+
+    const follow2 = {
+      id: uuid(),
+      follower_id: userCreated3.id,
+      following_id: userCreated1.id,
+      created_at: createdAt,
+      updated_at: createdAt,
+      active: true,
+    };
+    await FollowUser.create(follow2);
+
+    const response = await request(app)
+      .get(`/users/${userCreated3.id}/followings-lives`)
+      .query({
+        page: 0,
+        page_size: 15
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: userCreated3.id })}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("results");
+  });
+
+  it("should return error 400 in followings lives", async () => {
+    const response = await request(app)
+      .get(`/users/${uuid()}/followings-lives`)
+      .query({
+        test: 0,
+      })
+      .set("Authorization", `Bearer ${generateToken({ id: uuid() })}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body).toHaveProperty("error_description");
+  });
+
+  it("should return error 401 in followings lives", async () => {
+    const response = await request(app)
+      .get(`/users/${uuid()}/followings-lives`);
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty("error");

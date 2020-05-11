@@ -88,5 +88,14 @@ module.exports = {
       page: Joi.number().integer().default(0),
       page_size: Joi.number().integer().default(15),
     }),
+  },
+  getFollowingsLivesUserSchema: {
+    params: Joi.object({
+      user_id: Joi.string().uuid().required(),
+    }),
+    query: Joi.object({
+      page: Joi.number().integer().default(0),
+      page_size: Joi.number().integer().default(15),
+    }),
   }
 };

@@ -181,4 +181,18 @@ module.exports = {
       return res.status(status).json(error);
     }
   },
+  getFollowingsLivesUser: async (req, res) => {
+    try {
+      const response = await usersFactory.getFollowingsLivesUser({
+        ...req.body,
+        ...req.query,
+        ...req.params,
+        userId: req.userId,
+      });
+      return res.status(200).json(response);
+    } catch (err) {
+      const [status, error] = switchError(err);
+      return res.status(status).json(error);
+    }
+  },
 };
