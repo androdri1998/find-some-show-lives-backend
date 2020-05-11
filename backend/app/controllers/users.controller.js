@@ -37,6 +37,7 @@ module.exports = {
       });
       return res.status(200).json(response);
     } catch (err) {
+      console.log(err);
       const [status, error] = switchError(err);
       return res.status(status).json(error);
     }

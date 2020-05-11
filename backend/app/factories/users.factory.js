@@ -62,9 +62,12 @@ module.exports = {
     const user = await getOneUserRepository({ id: user_id });
     if (!user) throw new CustomNotFoundError("User not found");
 
-    user.password = undefined;
+    const follow = await getOneFollowRepository({following_id: user_id});
 
-    return { user };
+    user.password = undefined;
+    user.setDataValue("follow", (follow? true: false));
+
+    return user || null;
   },
   getUsers: async (params) => {
     const { page = 0, page_size = 10, search } = params;
@@ -85,6 +88,12 @@ module.exports = {
       offset: offset,
       ...where,
     });
+
+    for(const key in users){
+      const user = users[key];
+      const follow = await getOneFollowRepository({following_id: user.id});
+      users[key].setDataValue("follow", (follow? true: false));
+    }
 
     return {
       total: total,

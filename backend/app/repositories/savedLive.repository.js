@@ -12,6 +12,16 @@ module.exports = {
 
     return response;
   },
+  getOneSavedLiveRepository: async (params) => {
+    let saveLive;
+    try {
+      saveLive = await SavedLive.findOne({ where: { ...params } });
+    } catch (err) {
+      throw err;
+    }
+
+    return saveLive;
+  },
   unsaveLiveRepository: async (params) => {
     let response;
     const updatedAt = moment().format("YYYY-MM-DD HH:mm:ss");
