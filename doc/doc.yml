@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   description: ""
   version: 1.0.0
-  title: Where's Lives
+  title: Some Lives
 host: "localhost:8088"
 basePath: /
 tags:
