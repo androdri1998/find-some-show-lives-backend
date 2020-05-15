@@ -8,3 +8,5 @@ database.sqlite
 .env
 .env.test
 coverage/
+
+docker
