@@ -12,15 +12,16 @@ const { getOneUserRepository } = require("../repositories/users.repository");
 const {
   savedLiveRepository,
   unsaveLiveRepository,
+  getOneSavedLiveRepository,
 } = require("../repositories/savedLive.repository");
 
 module.exports = {
   createLiveFactory: async (params) => {
     let live;
     try {
-      const { title, description, date, time, reminder, userId } = params;
+      const { title, description, date, time, reminder, userDecoded } = params;
 
-      const user = await getOneUserRepository({ id: userId });
+      const user = await getOneUserRepository({ id: userDecoded.id });
       if (!user) throw new CustomNotFoundError("User not found");
 
       const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -30,7 +31,7 @@ module.exports = {
         description: description,
         date: `${date} ${time}`,
         reminder_in: reminder,
-        creator: userId,
+        creator: userDecoded.id,
         created_at: createdAt,
         updated_at: createdAt,
         active: true,
@@ -46,7 +47,7 @@ module.exports = {
     };
   },
   getLivesFactory: async (params) => {
-    const { page = 0, page_size = 10, search } = params;
+    const { page = 0, page_size = 10, search, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -69,6 +70,16 @@ module.exports = {
       offset: offset,
       ...where,
     });
+
+    for (const key in lives) {
+      const live = lives[key];
+      const isSaved = await getOneSavedLiveRepository({
+        user_id: userDecoded.id,
+        live_id: live.id,
+        active: true,
+      });
+      lives[key].setDataValue("saved", isSaved ? true : false);
+    }
 
     return {
       total: total,
@@ -96,7 +107,7 @@ module.exports = {
     };
   },
   getLivesUserFactory: async (params) => {
-    const { page = 0, page_size = 10, search, userId } = params;
+    const { page = 0, page_size = 10, search, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -111,7 +122,7 @@ module.exports = {
             [Op.like]: `${search}%`,
           },
         },
-        creator: userId,
+        creator: userDecoded.id,
       };
     }
 
@@ -121,6 +132,16 @@ module.exports = {
       ...where,
     });
 
+    for (const key in lives) {
+      const live = lives[key];
+      const isSaved = await getOneSavedLiveRepository({
+        user_id: userDecoded.id,
+        live_id: live.id,
+        active: true,
+      });
+      lives[key].setDataValue("saved", isSaved ? true : false);
+    }
+
     return {
       total: total,
       results: lives,
@@ -128,9 +149,9 @@ module.exports = {
   },
   saveLiveFactory: async (params) => {
     let saved;
-    const { live_id, userId } = params;
+    const { live_id, userDecoded } = params;
     try {
-      const user = await getOneUserRepository({ id: userId });
+      const user = await getOneUserRepository({ id: userDecoded.id });
       if (!user) throw new CustomNotFoundError("User not found");
 
       const live = await getOneLiveRepository({ id: live_id });
@@ -139,7 +160,7 @@ module.exports = {
       const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
       const savedLiveParams = {
         id: uuid(),
-        user_id: userId,
+        user_id: userDecoded.id,
         live_id: live_id,
         created_at: createdAt,
         updated_at: createdAt,
@@ -156,15 +177,15 @@ module.exports = {
     };
   },
   unsaveLiveFactory: async (params) => {
-    const { live_id, userId } = params;
+    const { live_id, userDecoded } = params;
     try {
-      const user = await getOneUserRepository({ id: userId });
+      const user = await getOneUserRepository({ id: userDecoded.id });
       if (!user) throw new CustomNotFoundError("User not found");
 
       const live = await getOneLiveRepository({ id: live_id });
       if (!live) throw new CustomNotFoundError("Live not found");
 
-      await unsaveLiveRepository({ live_id: live_id, user_id: userId });
+      await unsaveLiveRepository({ live_id: live_id, user_id: userDecoded.id });
     } catch (err) {
       throw err;
     }

@@ -180,7 +180,7 @@ describe("Users", () => {
       name: faker.name.findName(),
       password: userPass,
     };
-    await createUsersService(user1);
+    const userCreated = await createUsersService(user1);
 
     const user2 = {
       email: faker.internet.email(),
@@ -205,7 +205,7 @@ describe("Users", () => {
 
     const response = await request(app)
       .get(`/users`)
-      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
+      .set("Authorization", `Bearer ${generateToken({ id: userCreated.id })}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("total");
@@ -263,7 +263,7 @@ describe("Users", () => {
       name: faker.name.findName(),
       password: userPass,
     };
-    await createUsersService(user1);
+    const userCreated = await createUsersService(user1);
 
     const user2 = {
       email: faker.internet.email(),
@@ -292,7 +292,7 @@ describe("Users", () => {
         page: 0,
         page_size: 2,
       })
-      .set("Authorization", `Bearer ${generateToken({ teste: "teste" })}`);
+      .set("Authorization", `Bearer ${generateToken({ id: userCreated.id })}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("total");
@@ -665,10 +665,33 @@ describe("Users", () => {
   it("should return followings users", async () => {
     const userId = uuid();
     const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+
+    const userPass = faker.internet.password();
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated1 = await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated2 = await createUsersService(user2);
+
+    const user3 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated3 = await createUsersService(user3);
+
     await FollowUser.create({
       id: uuid(),
       follower_id: userId,
-      following_id: uuid(),
+      following_id: userCreated1.id,
       created_at: createdAt,
       updated_at: createdAt,
       active: true,
@@ -676,7 +699,7 @@ describe("Users", () => {
     await FollowUser.create({
       id: uuid(),
       follower_id: userId,
-      following_id: uuid(),
+      following_id: userCreated2.id,
       created_at: createdAt,
       updated_at: createdAt,
       active: true,
@@ -684,15 +707,7 @@ describe("Users", () => {
     await FollowUser.create({
       id: uuid(),
       follower_id: userId,
-      following_id: uuid(),
-      created_at: createdAt,
-      updated_at: createdAt,
-      active: true,
-    });
-    await FollowUser.create({
-      id: uuid(),
-      follower_id: userId,
-      following_id: uuid(),
+      following_id: userCreated3.id,
       created_at: createdAt,
       updated_at: createdAt,
       active: true,
@@ -739,9 +754,32 @@ describe("Users", () => {
   it("should return followers users", async () => {
     const userId = uuid();
     const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
+
+    const userPass = faker.internet.password();
+    const user1 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated1 = await createUsersService(user1);
+
+    const user2 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated2 = await createUsersService(user2);
+
+    const user3 = {
+      email: faker.internet.email(),
+      name: faker.name.findName(),
+      password: userPass,
+    };
+    const userCreated3 = await createUsersService(user3);
+
     await FollowUser.create({
       id: uuid(),
-      follower_id: uuid(),
+      follower_id: userCreated1.id,
       following_id: userId,
       created_at: createdAt,
       updated_at: createdAt,
@@ -749,7 +787,7 @@ describe("Users", () => {
     });
     await FollowUser.create({
       id: uuid(),
-      follower_id: uuid(),
+      follower_id: userCreated2.id,
       following_id: userId,
       created_at: createdAt,
       updated_at: createdAt,
@@ -757,15 +795,15 @@ describe("Users", () => {
     });
     await FollowUser.create({
       id: uuid(),
-      follower_id: uuid(),
-      following_id: userId,
+      follower_id: userId,
+      following_id: userCreated2.id,
       created_at: createdAt,
       updated_at: createdAt,
       active: true,
     });
     await FollowUser.create({
       id: uuid(),
-      follower_id: uuid(),
+      follower_id: userCreated3.id,
       following_id: userId,
       created_at: createdAt,
       updated_at: createdAt,

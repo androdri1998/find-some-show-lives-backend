@@ -8,7 +8,7 @@ module.exports = {
         ...req.body,
         ...req.query,
         ...req.params,
-        userId: req.userId,
+        userDecoded: req.userDecoded,
       });
       return res.status(201).json(response);
     } catch (err) {
@@ -22,7 +22,7 @@ module.exports = {
         ...req.body,
         ...req.query,
         ...req.params,
-        userId: req.userId,
+        userDecoded: req.userDecoded,
       });
       return res.status(200).json(response);
     } catch (err) {
@@ -36,7 +36,7 @@ module.exports = {
         ...req.body,
         ...req.query,
         ...req.params,
-        userId: req.userId,
+        userDecoded: req.userDecoded,
       });
       return res.status(200).json(response);
     } catch (err) {
@@ -50,7 +50,7 @@ module.exports = {
         ...req.body,
         ...req.query,
         ...req.params,
-        userId: req.userId,
+        userDecoded: req.userDecoded,
       });
       return res.status(200).json(response);
     } catch (err) {
@@ -64,7 +64,7 @@ module.exports = {
         ...req.body,
         ...req.query,
         ...req.params,
-        userId: req.userId,
+        userDecoded: req.userDecoded,
       });
       return res.status(201).json(response);
     } catch (err) {
@@ -78,7 +78,7 @@ module.exports = {
         ...req.body,
         ...req.query,
         ...req.params,
-        userId: req.userId,
+        userDecoded: req.userDecoded,
       });
       return res.status(200).json(response);
     } catch (err) {

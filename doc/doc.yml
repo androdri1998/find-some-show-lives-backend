@@ -92,6 +92,49 @@ paths:
           description: "Error, to more informations, query error_description"
           schema:
             $ref: "#/definitions/responseError"
+  "/users/{user_id}/update-email":
+    put:
+      tags:
+        - User
+      summary: Update email user in the application
+      description: ""
+      operationId: updateEmail
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: user_id
+          type: string
+          required: true
+        - in: body
+          name: body
+          description: User object that needs to be update email user in the application
+          required: true
+          schema:
+            $ref: "#/definitions/ParamsUpdateEmail"
+      responses:
+        "201":
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/successRegister"
+        "400":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+        "401":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+        "404":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+        "409":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
   "/users/{user_id}":
     put:
       tags:
@@ -203,94 +246,6 @@ paths:
           description: "Error, to more informations, query error_description"
           schema:
             $ref: "#/definitions/responseError"
-  "/users/{user_id}/update-email":
-    put:
-      tags:
-        - User
-      summary: Update email user in the application
-      description: ""
-      operationId: updateEmail
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: user_id
-          type: string
-          required: true
-        - in: body
-          name: body
-          description: User object that needs to be update email user in the application
-          required: true
-          schema:
-            $ref: "#/definitions/ParamsUpdateEmail"
-      responses:
-        "201":
-          description: Successful operation
-          schema:
-            $ref: "#/definitions/successRegister"
-        "400":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-        "401":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-        "404":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-        "409":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-  "/users/{user_id}/followings-lives":
-    get:
-      tags:
-        - User
-      summary: Get lives of users followings in the application
-      description: ""
-      operationId: getListLivesFollowing
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: user_id
-          type: string
-          required: true
-        - in: query
-          name: page
-          type: number
-          required: false
-        - in: query
-          name: page_size
-          type: number
-          required: false
-      responses:
-        "201":
-          description: Successful operation
-          schema:
-            $ref: "#/definitions/listLives"
-        "400":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-        "401":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-        "404":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
-        "409":
-          description: "Error, to more informations, query error_description"
-          schema:
-            $ref: "#/definitions/responseError"
   "/users/{user_id}/followings":
     get:
       tags:
@@ -370,6 +325,51 @@ paths:
           schema:
             $ref: "#/definitions/responseError"
         "404":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+  "/users/{user_id}/followings-lives":
+    get:
+      tags:
+        - User
+      summary: Get lives of users followings in the application
+      description: ""
+      operationId: getListLivesFollowing
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: user_id
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: number
+          required: false
+        - in: query
+          name: page_size
+          type: number
+          required: false
+      responses:
+        "201":
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/listLives"
+        "400":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+        "401":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+        "404":
+          description: "Error, to more informations, query error_description"
+          schema:
+            $ref: "#/definitions/responseError"
+        "409":
           description: "Error, to more informations, query error_description"
           schema:
             $ref: "#/definitions/responseError"
@@ -900,7 +900,7 @@ definitions:
             creator:
               type: string
             saved:
-              type: string
+              type: boolean
   successRegister:
     type: object
     properties:

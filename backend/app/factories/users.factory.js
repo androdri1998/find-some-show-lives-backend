@@ -21,11 +21,10 @@ const {
   getFollowsRepository,
 } = require("../repositories/followUser.repository");
 const {
-  getSavedLivesRepository
+  getSavedLivesRepository,
+  getOneSavedLiveRepository,
 } = require("../repositories/savedLive.repository");
-const {
-  getLivesRepository
-} = require("../repositories/lives.repository");
+const { getLivesRepository } = require("../repositories/lives.repository");
 
 module.exports = {
   createUsers: async (params) => {
@@ -57,20 +56,24 @@ module.exports = {
     };
   },
   getUser: async (params) => {
-    const { user_id } = params;
+    const { user_id, userDecoded } = params;
 
     const user = await getOneUserRepository({ id: user_id });
     if (!user) throw new CustomNotFoundError("User not found");
 
-    const follow = await getOneFollowRepository({following_id: user_id});
+    const follow = await getOneFollowRepository({
+      follower_id: userDecoded.id,
+      following_id: user_id,
+      active: true,
+    });
 
     user.password = undefined;
-    user.setDataValue("follow", (follow? true: false));
+    user.setDataValue("follow", follow ? true : false);
 
     return user || null;
   },
   getUsers: async (params) => {
-    const { page = 0, page_size = 10, search } = params;
+    const { page = 0, page_size = 10, search, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -89,10 +92,14 @@ module.exports = {
       ...where,
     });
 
-    for(const key in users){
-      const user = users[key];
-      const follow = await getOneFollowRepository({following_id: user.id});
-      users[key].setDataValue("follow", (follow? true: false));
+    for (const key in users) {
+      const userSearch = users[key];
+      const follow = await getOneFollowRepository({
+        follower_id: userDecoded.id,
+        following_id: userSearch.id,
+        active: true,
+      });
+      users[key].setDataValue("follow", follow ? true : false);
     }
 
     return {
@@ -101,12 +108,12 @@ module.exports = {
     };
   },
   followUser: async (params) => {
-    const { userId, following_id } = params;
+    const { userDecoded, following_id } = params;
 
     try {
       const alreadyFollow = await getOneFollowRepository({
         [Op.and]: [
-          { follower_id: userId },
+          { follower_id: userDecoded.id },
           { following_id: following_id },
           { active: true },
         ],
@@ -121,7 +128,7 @@ module.exports = {
       const createdAt = moment().format("YYYY-MM-DD HH:mm:ss");
       await followUserRepository({
         id: followId,
-        follower_id: userId,
+        follower_id: userDecoded.id,
         following_id: following_id,
         created_at: createdAt,
         updated_at: createdAt,
@@ -137,10 +144,10 @@ module.exports = {
     };
   },
   unfollowUser: async (params) => {
-    const { userId, following_id } = params,
+    const { userDecoded, following_id } = params,
       whereFollow = {
         [Op.and]: [
-          { follower_id: userId },
+          { follower_id: userDecoded.id },
           { following_id: following_id },
           { active: true },
         ],
@@ -168,7 +175,7 @@ module.exports = {
   },
   logoutUser: async (params) => {
     return {
-      id: params.userId,
+      id: params.userDecoded.id,
       message: "Logout with success.",
     };
   },
@@ -221,7 +228,7 @@ module.exports = {
     };
   },
   getFollowings: async (params) => {
-    const { page = 0, page_size = 10, user_id } = params;
+    const { page = 0, page_size = 10, user_id, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -232,13 +239,36 @@ module.exports = {
       active: true,
     });
 
+    const userIds = [];
+    follows.map((follow) => {
+      userIds.push(follow.following_id);
+    });
+
+    const [, users] = await getUsersRepository({
+      limit: page_size,
+      offset: offset,
+      id: {
+        [Op.in]: userIds,
+      },
+    });
+
+    for (const key in users) {
+      const userSearch = users[key];
+      const follow = await getOneFollowRepository({
+        follower_id: userDecoded.id,
+        following_id: userSearch.id,
+        active: true,
+      });
+      users[key].setDataValue("follow", follow ? true : false);
+    }
+
     return {
       total: total,
-      results: follows,
+      results: users,
     };
   },
   getFollowers: async (params) => {
-    const { page = 0, page_size = 10, user_id } = params;
+    const { page = 0, page_size = 10, user_id, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -249,13 +279,36 @@ module.exports = {
       active: true,
     });
 
+    const userIds = [];
+    follows.map((follow) => {
+      userIds.push(follow.follower_id);
+    });
+
+    const [, users] = await getUsersRepository({
+      limit: page_size,
+      offset: offset,
+      id: {
+        [Op.in]: userIds,
+      },
+    });
+
+    for (const key in users) {
+      const userSearch = users[key];
+      const follow = await getOneFollowRepository({
+        follower_id: userDecoded.id,
+        following_id: userSearch.id,
+        active: true,
+      });
+      users[key].setDataValue("follow", follow ? true : false);
+    }
+
     return {
       total: total,
-      results: follows,
+      results: users,
     };
   },
   getSavedLivesUser: async (params) => {
-    const { page = 0, page_size = 10, user_id } = params;
+    const { page = 0, page_size = 10, user_id, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -267,17 +320,27 @@ module.exports = {
     });
 
     const livesIds = [];
-    saveds.map(saved => {
+    saveds.map((saved) => {
       livesIds.push(saved.live_id);
     });
 
-    const [,lives ] = await getLivesRepository({
+    const [, lives] = await getLivesRepository({
       limit: page_size,
       offset: offset,
       id: {
-        [Op.in]: livesIds
+        [Op.in]: livesIds,
       },
     });
+
+    for (const key in lives) {
+      const live = lives[key];
+      const isSaved = await getOneSavedLiveRepository({
+        user_id: userDecoded.id,
+        live_id: live.id,
+        active: true,
+      });
+      lives[key].setDataValue("saved", isSaved ? true : false);
+    }
 
     return {
       total: total,
@@ -285,7 +348,7 @@ module.exports = {
     };
   },
   getFollowingsLivesUser: async (params) => {
-    const { page = 0, page_size = 10, user_id } = params;
+    const { page = 0, page_size = 10, user_id, userDecoded } = params;
 
     const offset = page_size * page;
 
@@ -296,17 +359,27 @@ module.exports = {
     });
 
     const usersIds = [];
-    follows.map(follow => {
+    follows.map((follow) => {
       usersIds.push(follow.following_id);
     });
 
-    const [ total, lives ] = await getLivesRepository({
+    const [total, lives] = await getLivesRepository({
       limit: page_size,
       offset: offset,
       creator: {
-        [Op.in]: usersIds
+        [Op.in]: usersIds,
       },
     });
+
+    for (const key in lives) {
+      const live = lives[key];
+      const isSaved = await getOneSavedLiveRepository({
+        user_id: userDecoded.id,
+        live_id: live.id,
+        active: true,
+      });
+      lives[key].setDataValue("saved", isSaved ? true : false);
+    }
 
     return {
       total: total,
