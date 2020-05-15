@@ -1,5 +1,16 @@
+const getEnv = (stage) => {
+  switch (stage) {
+    case "test":
+      return ".env.test";
+    case "dev":
+      return ".env.dev";
+    case "dev":
+      return ".env.prod";
+  }
+};
+
 require("dotenv").config({
-  path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
+  path: getEnv(process.env.NODE_ENV),
 });
 
 module.exports = {

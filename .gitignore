@@ -5,7 +5,8 @@ docker-compose.yml
 database.js
 database.sqlite
 
-.env
+.env.dev
+.env.prod
 .env.test
 coverage/
 

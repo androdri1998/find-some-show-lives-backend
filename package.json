@@ -4,9 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js --ignore __tests__",
-    "run-migration": "sequelize db:migrate",
+    "start": "NODE_ENV=prod node index.js",
+    "dev": "NODE_ENV=dev nodemon index.js --ignore __tests__",
+    "run-migration": "NODE_ENV=prod sequelize db:migrate",
+    "run-dev-migration": "NODE_ENV=dev sequelize db:migrate",
     "pretest": "NODE_ENV=test sequelize db:migrate",
     "test": "jest --runInBand",
     "posttest": "NODE_ENV=test sequelize db:migrate:undo:all"
