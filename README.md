@@ -2,7 +2,9 @@
   
 This is a simple and initial back-end application to manager schedules live show times, where is possible create live show times and save live show times, follow users to accompany the live show times createds.  
   
-But this is only a simple application to practice development oriented to TDD and **is not recommend to use this application in production**. is only a demonstration of knowledgements about development oriented to TDD, Back-end Development, Node.js and JavaScript Language.
+**This backend application was created only to study Javascript language.**
+  
+This is only a simple application to practice development oriented to TDD and **is not recommend to use this application in production**. is only a demonstration of knowledgements about development oriented to TDD, Back-end Development, Node.js and JavaScript Language.
 
 ## executing application backend
 execute yarn install:  
