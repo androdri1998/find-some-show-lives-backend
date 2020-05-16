@@ -24,6 +24,8 @@ execute script migration in prod ```NODE_ENV=prod sequelize db:migrate```:
 execute script to run application in prod ```NODE_ENV=prod node index.js```:  
 ```$ yarn start```  
   
+**is not recommend to use this application in production**
+  
 ### run TDD tests application in ```test``` stage follow the steps:   
 execute script to run tests of the application in ```test``` stage ```jest --runInBand```:  
 ```$ yarn test```  
